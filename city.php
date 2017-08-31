@@ -33,9 +33,11 @@ while (!empty($_SESSION[$y])){
     $y++;
 }
 $_SESSION[$y] = $_POST['city'];
+
 $used[$x] = $_SESSION[$y];
+
 if (in_array ($_POST, $used) ) {
-    echo "ЭТОТ ГОРОД УЖЕ БЫЛ, МУДИЛА!";
+echo "ЭТОТ ГОРОД УЖЕ БЫЛ, МУДИЛА!";
 }
 
 
