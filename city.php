@@ -1,8 +1,4 @@
-<?php
 
-session_start();
-
-?>
 <html>
 <head>
     <title>
@@ -16,48 +12,45 @@ session_start();
 <?php
 
 
-$x = 1;
-while (!empty($used[$x])) {
-    $x++;
-}
 
 
 
+$goroda = file_get_contents(__DIR__.'/goroda.txt');
+$goroda = explode(" ", $goroda);
 
-$goroda = ["Орёл", "Архангельск","Москва", "Санкт-Петербург", "Брянск", "Воронеж", "Гвардейск", "Екатеринбург", "Железноводск", "зеленоград","Иркутск", "Калининград", "Ломоносов", "Новосибирск", "Оренбург", "Петрозаводск", "Ростов", "Тагил", "Уфа", "Форос", "Хабаровск", "Цимлянск", "Чехов", "Электросталь", "Южно-Сахалинск", "Якутск"];
 $answer = $_POST['city'];
+//["Орёл", "Архангельск","Москва", "Санкт-Петербург", "Брянск", "Воронеж", "Гвардейск", "Екатеринбург", "Железноводск", "зеленоград","Иркутск", "Калининград", "Ломоносов", "Новосибирск", "Оренбург", "Петрозаводск", "Ростов", "Тагил", "Уфа", "Форос", "Хабаровск", "Цимлянск", "Чехов", "Электросталь", "Южно-Сахалинск", "Якутск"];
 
-$y = 1;
 
-while (!empty($_SESSION[$y])){
-    $y++;
+
+$a = file_get_contents(__DIR__.'/used.txt');
+$a = explode(" ",  $a);
+foreach ($a as $number=>$value) {
+    if ($value == $_POST['city']){
+        echo "Этот город уже был!";
+        break;
+    }
 }
-$_SESSION[$y] = $_POST['city'];
+$a[] = $_POST['city'];
+$a = implode(" ", $a);
+file_put_contents(__DIR__.'/used.txt', $a);
 
-$used[$x] = $_SESSION[$y];
 
-if (in_array ($_POST, $used) ) {
-echo "ЭТОТ ГОРОД УЖЕ БЫЛ, МУДИЛА!";
+$lastChar = mb_substr($answer, -1);
+if ($lastChar == "ь" || $lastChar == "ы"){
+    $lastChar = mb_substr($answer, -2, 1);
 }
+$lastChar = mb_strtoupper ($lastChar);
 
 
-var_dump($_SESSION);?>
-</br> <?php
-var_dump($used);
 
-
-$char = mb_substr($answer, -1);
-if ($char == "ь" xor $char == "ы"){
-    $char = mb_substr($answer, -2, 1);
-}
-$char = mb_strtoupper ($char);
-function qwe($goroda, $char) {
+function qwe($goroda, $lastChar) {
     foreach ($goroda as $number => $value) {
 
         $x = mb_substr($value, 0, 1);
 
 
-        if ($x == $char) {
+        if ($x == $lastChar) {
 
             return $value;
         }
@@ -65,7 +58,7 @@ function qwe($goroda, $char) {
     }
 }
 
-echo  qwe($goroda,$char);
+echo  qwe($goroda,$lastChar);
 
 
 ?>
