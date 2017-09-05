@@ -21,32 +21,31 @@ $goroda = explode(",", $goroda);
 
 $answer = mb_strtoupper(mb_substr($_POST['city'], 0, 1)).mb_substr($_POST['city'], 1);
 
+$firstChar = file_get_contents(__DIR__ . '/firstChar.txt');
+$firstChar = mb_strtoupper($firstChar);
+$firstCharAnswer = mb_substr($answer, 0, 1);
+
+$used = file_get_contents(__DIR__ . '/used.txt');
+$used = explode(", ", $used);
 
 if (!in_array($answer, $goroda)){
-    echo "Это не русский город! Попробуй её раз!";
-} else {
+    echo "Это не русский город! Попробуй её раз! Напиши город на букву: ".$firstChar; ?>
+    <br>
+    <br>
+    <?php
+    $used = implode(", ", $used);
+    echo "Использованные города: ", $used;
+} else if ($firstChar !== '' & $firstChar !== $firstCharAnswer) {
 
-    $firstChar = file_get_contents(__DIR__ . '/firstChar.txt');
-    $firstChar = mb_strtoupper($firstChar);
-    $firstCharAnswer = mb_substr($answer, 0, 1);
-
-    $used = file_get_contents(__DIR__ . '/used.txt');
-    $used = explode(", ", $used);
-
-    if ($firstChar !== '' & $firstChar !== $firstCharAnswer) {
         echo "Город начинается на неверную букву, попробуй ещё раз! Нужная буква: ".$firstChar;  ?>
         <br>
         <br>
         <?php
         $used = implode(", ", $used);
         echo "Использованные города: ", $used;
-    } else {
+    } else if (in_array($answer, $used)) {
 
-
-
-   
-        if (in_array($answer, $used)) {
-            echo "Этот город уже был! Введи другой!";
+            echo "Этот город уже был! Введи другой! Нужно начать на букву: ".$firstChar;
             ?>
             <br>
             <br>
@@ -87,9 +86,14 @@ if (!in_array($answer, $goroda)){
             $used = implode(", ", $used);
 
             file_put_contents(__DIR__ . '/used.txt', $used);
+            
             $answerRobo = qwe($goroda, $lastChar);
             echo $answerRobo;
+            
             $firstChar = mb_substr($answerRobo, -1);
+            if ($firstChar == "ь" || $firstChar == "ы") {
+                $firstChar = mb_substr($answerRobo, -2, 1);
+            }
             file_put_contents(__DIR__ . '/firstChar.txt', $firstChar);
 
             ?>
@@ -97,8 +101,8 @@ if (!in_array($answer, $goroda)){
             <br>
             <?php
             echo "Использованные города: ", $used;
-        }
-    }
+        
+
 }
 ?>
     <br>
